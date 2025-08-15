@@ -1,0 +1,12 @@
+stages:
+  - template: ValidateAndBundle.yaml
+    parameters:
+      buildEnv: Dev
+  - template: deployment.yaml
+    parameters:
+      buildEnv: Dev
+      dependsOn: BuildDatabricksArtifacts
+  - template: deployment.yaml
+    parameters:
+      buildEnv: Test
+      dependsOn: DeployToDev

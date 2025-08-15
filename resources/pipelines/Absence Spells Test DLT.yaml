@@ -1,0 +1,23 @@
+resources:
+  pipelines:
+    pipeline_absence_spells_dlt:
+      name: Absence Spells (TEST)_DAB
+      configuration:
+        container: ${var.container}
+        folder_path: ${var.folderPath}/HR/Absence/Absence_Spells/CSV
+        storage_account: ${var.storageAccount}
+      clusters:
+        - label: default
+          node_type_id: ${var.DLTClusterNodeType}
+          driver_node_type_id: ${var.DLTClusterNodeType}
+          autoscale:
+            min_workers: ${var.DLTMinWorkers}
+            max_workers: ${var.DLTMaxWorkers}
+            mode: ENHANCED
+      libraries:
+        - notebook:
+            path: /live/Absence Spells DLT Pipeline
+      schema: ${var.DLTSchema}
+      development: false
+      catalog: ${var.catalog}
+      data_sampling: false

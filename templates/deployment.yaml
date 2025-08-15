@@ -1,0 +1,120 @@
+parameters:
+  - name: buildEnv
+  - name: dependsOn
+
+stages:
+  - stage: DeployTo${{ parameters.buildEnv }}
+    displayName: 'DeployTo${{ parameters.buildEnv }}'
+    dependsOn: ${{parameters.dependsOn}}
+    variables:
+      - group: Dab_${{ parameters.buildEnv }}_Dbw_Variables
+    jobs:
+      - deployment: DeployArtifacts
+        displayName: 'Deploy Databricks Artifacts'
+        environment: DAB_${{parameters.buildEnv}}_Workspace
+        pool:
+          vmImage: 'ubuntu-latest'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - task: Bash@3
+                  displayName: 'Replace Variables In Databricks.yml'
+                  inputs:
+                    targetType: 'inline'
+                    script: |
+                      cd $(pipeline.workspace)/DatabricksBundle
+                      pwd
+                      ls -al
+                      sed -i 's|_deployEnv_|$(deployEnv)|g' databricks.yml
+                      sed -i 's|_workspaceUrl_|$(workspaceUrl)|g' databricks.yml
+                      sed -i 's|_successEmailDL_|$(successEmailDL)|g' databricks.yml
+                      sed -i 's|_failureEmailDL_|$(failureEmailDL)|g' databricks.yml
+                      sed -i 's|_prefixNotebookPath_|$(prefixNotebookPath)|g' databricks.yml
+                      sed -i 's|_repoName_|$(repoName)|g' databricks.yml
+                      sed -i 's|_storageAccount_|$(storageAccount)|g' databricks.yml
+                      sed -i 's|_container_|$(container)|g' databricks.yml
+                      sed -i 's|_folderPath_|$(folderPath)|g' databricks.yml
+                      sed -i 's|_existingClusterId_|$(existingClusterId)|g' databricks.yml
+                      sed -i 's|_jobClusterKey_|$(jobClusterKey)|g' databricks.yml
+                      sed -i 's|_jobClusterNodeType_|$(jobClusterNodeType)|g' databricks.yml
+                      sed -i 's|_DLTClusterNodeType_|$(DLTClusterNodeType)|g' databricks.yml
+                      sed -i 's|_DLTMinWorkers_|$(DLTMinWorkers)|g' databricks.yml
+                      sed -i 's|_DLTMaxWorkers_|$(DLTMaxWorkers)|g' databricks.yml
+                      sed -i 's|_DLTSchema_|$(DLTSchema)|g' databricks.yml
+                      sed -i 's|_catalog_|$(catalog)|g' databricks.yml
+                      sed -i 's|_servicePrincpalClientId_|$(clientid)|g' databricks.yml
+                      cat databricks.yml
+                - task: Bash@3
+                  displayName: 'Install Databricks CLI'
+                  inputs:
+                    targetType: 'inline'
+                    script: |
+                      if ! command -v databricks &> /dev/null; then
+                        echo "Databricks CLI not found. Installing..."
+                        sudo apt install unzip
+                        sudo curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sudo sh
+                        databricks -v
+                      else
+                      echo "Databricks CLI is already installed. Skipping installation."
+                      databricks -v
+                      fi
+                - task: Bash@3
+                  displayName: 'Set new variable value'
+                  inputs:
+                    targetType: 'inline'
+                    script: 'echo "##vso[task.setvariable variable=DATABRICKS_BUNDLE_ROOT]$(pipeline.workspace)/DatabricksBundle"'
+                - task: Bash@3
+                  displayName: 'AZ login and bundle validate'
+                  inputs:
+                    targetType: 'inline'
+                    script: |
+                      # Azure login
+                      az login --service-principal --username $(clientid) --password $(clientsecret) --tenant $(tenantid) &> login_output.txt
+                      
+                      # Check if login was successful
+                      if az account show &> /dev/null; then
+                          echo "Azure login successful."
+                      else
+                          echo "Azure login failed. See details below:"
+                          cat login_output.txt
+                          exit 1
+                      fi
+                      # validate databricks bundle
+                      databricks bundle validate -t ${{parameters.buildEnv}}
+                # - task: Bash@3
+                #   displayName: 'AZ login and importing the jobs'
+                #   inputs:
+                #     targetType: 'inline'
+                #     script: |
+                #       # Azure login
+                #       az login --service-principal --username $(clientid) --password $(clientsecret) --tenant $(tenantid) &> login_output.txt
+                      
+                #       # Check if login was successful
+                #       if az account show &> /dev/null; then
+                #           echo "Azure login successful."
+                #       else
+                #           echo "Azure login failed. See details below:"
+                #           cat login_output.txt
+                #           exit 1
+                #       fi
+                #       # Exporting Absence spell Test using Bind
+                #       databricks bundle deployment bind -t ${{parameters.buildEnv}} Absence_Spells_TEST 240032103500563 --auto-approve
+                - task: Bash@3
+                  displayName: 'AZ login and bundle deploy'
+                  inputs:
+                    targetType: 'inline'
+                    script: |
+                      # Azure login
+                      az login --service-principal --username $(clientid) --password $(clientsecret) --tenant $(tenantid) &> login_output.txt
+                      
+                      # Check if login was successful
+                      if az account show &> /dev/null; then
+                          echo "Azure login successful."
+                      else
+                          echo "Azure login failed. See details below:"
+                          cat login_output.txt
+                          exit 1
+                      fi
+                      # deploy databricks bundle
+                      databricks bundle deploy -t ${{parameters.buildEnv}}

@@ -1,0 +1,77 @@
+# This is a Databricks asset bundle definition for dab_cicd.
+# See https://docs.databricks.com/dev-tools/bundles/index.html for documentation.
+bundle:
+  name: dab_cicd
+  uuid: 5485b833-0353-4d0d-9c49-65616359d20a
+
+include:
+  - resources/jobs/*
+  - resources/pipelines/*
+
+variables:
+  workspaceUrl:
+    description: 'Workspace URL for deploying jobs or pipelines'
+  deployEnv:
+    description: 'Target environment like DEV, TEST. PRE-PROD, PROD'
+  successEmailDL:
+    description: 'DL or email for sending the successful run of jobs or pipelines'
+  failureEmailDL:
+    description: 'DL or email for sending the failure run of jobs or pipelines'
+  prefixNotebookPath:
+    description: 'Prefix for the directory in which notebooks are present'
+  # repoName:
+  #   description: 'Name of the repo'
+  storageAccount:
+    description: 'Name of the storage account'
+  container:
+    description: 'Name of the container in storage account'
+  folderPath:
+    description: 'Prefix for the folder path in container'
+  existingClusterId:
+    description: 'ID of the existing cluster present in the workspace'
+  # jobClusterKey:
+  #   description: 'Name of the job cluster '
+  # jobClusterNodeType:
+  #   description: 'Job clusters node type like Standard_D4ds_v5'
+  DLTClusterNodeType:
+    description: 'DLT pipeline clusters node type like Standard_D4ds_v5'
+  DLTMinWorkers:
+    description: 'DLT pipeline minimum no. of workers'
+  DLTMaxWorkers:
+    description: 'DLT pipeline maximum no. of workers'
+  DLTSchema:
+    description: 'Schema used for the DLT pipelines'
+  catalog:
+    description: 'Catalog used in the DLT pipelines'
+  servicePrincpalName:
+    description: 'clientID of the service princpal'
+
+
+targets:
+  _deployEnv_:
+    mode: production
+    workspace:
+      host: _workspaceUrl_
+      root_path: /Workspace/Shared/Databricks_Asset_Bundle/
+    variables:
+      workspaceUrl: _workspaceUrl_
+      deployEnv: _deployEnv_
+      successEmailDL: _successEmailDL_
+      failureEmailDL: _failureEmailDL_
+      prefixNotebookPath: _prefixNotebookPath_
+      # repoName: _repoName_
+      storageAccount: _storageAccount_
+      container: _container_
+      folderPath: _folderPath_
+      existingClusterId: _existingClusterId_
+      # jobClusterKey: _jobClusterKey_
+      # jobClusterNodeType: _jobClusterNodeType_
+      DLTClusterNodeType: _DLTClusterNodeType_
+      DLTMinWorkers: _DLTMinWorkers_
+      DLTMaxWorkers: _DLTMaxWorkers_
+      DLTSchema: _DLTSchema_
+      catalog: _catalog_
+      servicePrincpalName: _servicePrincpalClientId_
+
+    run_as:
+      service_principal_name: _servicePrincpalClientId_

@@ -1,0 +1,22 @@
+resources:
+  pipelines:
+    pipeline_absence_data_dlt:
+      name: Absence_Data_DLT_DAB
+      configuration:
+        container: ${var.container}
+        folder_path: ${var.folderPath}/Absence/Absence_Data/CSV
+        storage_account: ${var.storageAccount}
+      clusters:
+        - label: default
+          node_type_id: ${var.DLTClusterNodeType}
+          driver_node_type_id: ${var.DLTClusterNodeType}
+          autoscale:
+            min_workers: ${var.DLTMinWorkers}
+            max_workers: ${var.DLTMaxWorkers}
+            mode: ENHANCED
+      libraries:
+        - notebook:
+            path: /live/Absence Data DLT Pipeline
+      schema: ${var.DLTSchema}
+      development: false
+      catalog: ${var.catalog}

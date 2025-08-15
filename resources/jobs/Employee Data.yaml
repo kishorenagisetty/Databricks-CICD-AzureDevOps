@@ -1,0 +1,18 @@
+resources:
+  jobs:
+    Employee_Data:
+      name: Employee Data_DAB
+      tasks:
+        - task_key: CSV_Converter
+          notebook_task:
+            notebook_path: ${var.prefixNotebookPath}/Employee
+              Data CSV
+            source: WORKSPACE
+          existing_cluster_id: ${var.existingClusterId}
+        - task_key: DLT_Injestion
+          depends_on:
+            - task_key: CSV_Converter
+          pipeline_task:
+            pipeline_id: ${resources.pipelines.pipeline_employee_data_dlt.id}
+      queue:
+        enabled: true

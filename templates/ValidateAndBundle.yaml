@@ -1,0 +1,95 @@
+parameters:
+  - name: buildEnv
+
+stages:
+  - stage: BuildDatabricksArtifacts
+    displayName: 'BuildDatabricksArtifacts'
+    variables:
+    - group: Dab_${{ parameters.buildEnv }}_Dbw_Variables
+    jobs:
+    - job:
+      pool:
+        vmImage: 'ubuntu-latest'
+      steps:
+        - checkout: self
+        - task: Bash@3
+          displayName: 'Install Databricks CLI'
+          inputs:
+            targetType: 'inline'
+            script: |
+              sudo apt install unzip
+              sudo curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sudo sh
+              databricks -v
+        - task: CopyFiles@2
+          displayName: 'Get Artifacts'
+          inputs:
+            SourceFolder: '$(Build.Repository.LocalPath)'
+            Contents: '**'
+            TargetFolder: '$(Build.BinariesDirectory)'
+            CleanTargetFolder: true
+            OverWrite: true
+        - task: Bash@3
+          displayName: 'Replace Variables In Databricks.yml'
+          inputs:
+            targetType: 'inline'
+            script: |
+              cd $(Build.BinariesDirectory)
+              pwd
+              ls -al
+              sed -i 's|_deployEnv_|$(deployEnv)|g' databricks.yml
+              sed -i 's|_workspaceUrl_|$(workspaceUrl)|g' databricks.yml
+              sed -i 's|_successEmailDL_|$(successEmailDL)|g' databricks.yml
+              sed -i 's|_failureEmailDL_|$(failureEmailDL)|g' databricks.yml
+              sed -i 's|_prefixNotebookPath_|$(prefixNotebookPath)|g' databricks.yml
+              sed -i 's|_repoName_|$(repoName)|g' databricks.yml
+              sed -i 's|_storageAccount_|$(storageAccount)|g' databricks.yml
+              sed -i 's|_container_|$(container)|g' databricks.yml
+              sed -i 's|_folderPath_|$(folderPath)|g' databricks.yml
+              sed -i 's|_existingClusterId_|$(existingClusterId)|g' databricks.yml
+              sed -i 's|_jobClusterKey_|$(jobClusterKey)|g' databricks.yml
+              sed -i 's|_jobClusterNodeType_|$(jobClusterNodeType)|g' databricks.yml
+              sed -i 's|_DLTClusterNodeType_|$(DLTClusterNodeType)|g' databricks.yml
+              sed -i 's|_DLTMinWorkers_|$(DLTMinWorkers)|g' databricks.yml
+              sed -i 's|_DLTMaxWorkers_|$(DLTMaxWorkers)|g' databricks.yml
+              sed -i 's|_DLTSchema_|$(DLTSchema)|g' databricks.yml
+              sed -i 's|_catalog_|$(catalog)|g' databricks.yml
+              sed -i 's|_servicePrincpalClientId_|$(clientid)|g' databricks.yml
+              
+              cat databricks.yml
+        - task: Bash@3
+          displayName: 'Set new variable value'
+          inputs:
+            targetType: 'inline'
+            script: 'echo "##vso[task.setvariable variable=DATABRICKS_BUNDLE_ROOT]$(Build.BinariesDirectory)"'
+        - task: Bash@3
+          displayName: 'AZ login and bundle validate'
+          inputs:
+            targetType: 'inline'
+            script: |
+              # Azure login
+              az login --service-principal --username $(clientid) --password $(clientsecret) --tenant $(tenantid) &> login_output.txt
+              
+              # Check if login was successful
+              if az account show &> /dev/null; then
+                  echo "Azure login successful."
+              else
+                  echo "Azure login failed. See details below:"
+                  cat login_output.txt
+                  exit 1
+              fi
+              # validate databricks bundle
+              databricks bundle validate -t ${{parameters.buildEnv}}
+        - task: CopyFiles@2
+          displayName: 'Bundle Upload to Artifact Directory'
+          inputs:
+            SourceFolder: '$(Build.Repository.LocalPath)'
+            Contents: '**'
+            TargetFolder: '$(Build.ArtifactStagingDirectory)'
+            CleanTargetFolder: true
+            OverWrite: true
+        - task: PublishBuildArtifacts@1
+          displayName: 'Bundle Publish'
+          inputs:
+            PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+            ArtifactName: 'DatabricksBundle'
+            publishLocation: 'Container'
