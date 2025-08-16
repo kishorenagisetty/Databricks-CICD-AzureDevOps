@@ -1,17 +1,11 @@
----
+![IaC](https://img.shields.io/badge/IaC-Databricks%20Asset%20Bundles-8B5CF6?style=flat-square&logo=terraform&logoColor=white)
+![Azure DevOps](https://img.shields.io/badge/CI%2FCD-Azure%20DevOps-2563eb?style=flat-square&logo=azuredevops&logoColor=white)
+![DLT](https://img.shields.io/badge/Delta%20Live%20Tables-DLT-059669?style=flat-square)
+![Unity Catalog](https://img.shields.io/badge/Unity%20Catalog-Ready-6b7280?style=flat-square)
+![Security](https://img.shields.io/badge/Security-Service%20Principal-DC2626?style=flat-square)
+![License](https://img.shields.io/badge/License-MIT-111827?style=flat-square&logo=open-source-initiative&logoColor=white)
+![Author](https://img.shields.io/badge/Kishore%20Kumar%20Nagisetty-Maintainer-ec4899?style=flat-square&logo=github&logoColor=white)
 
-## 🧾 License
-
-<p align="center">
-  <img src="https://img.shields.io/badge/LICENSE-MIT-green?style=for-the-badge&logo=balance-scale&logoColor=white" alt="MIT License"/>
-</p>
-
-<p align="center">
-  Distributed under the <a href="LICENSE">MIT License</a>.  
-  See <a href="LICENSE">LICENSE</a> file for more details.
-</p>
-
----
 
 
 ## 📦 Features
