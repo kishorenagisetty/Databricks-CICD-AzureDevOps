@@ -57,3 +57,24 @@ A fully automated solution to **define & deploy Databricks Jobs/Workflows and De
 ├── databricks.yml                         # DAB bundle & targets (env vars injected)
 ├── fixtures/.gitkeep                      # Example snippet for loading CSV fixtures (docs)
 └── README.md
+
+⚙️ How It Works
+Build (AzDO)
+Install Databricks CLI.
+Replace placeholders inside databricks.yml with env values from Variable Groups.
+databricks bundle validate -t <ENV> to sanity check.
+Publish DatabricksBundle artifact.
+Deploy (AzDO)
+Download artifact and re-inject env values (DEV/TEST/PROD).
+az login with Service Principal.
+databricks bundle deploy -t <ENV> to create/update Jobs & DLT Pipelines.
+Already have objects in the workspace? Bind once
+databricks bundle deployment bind -t <env> <resource-name> <existing-id> --auto-approve
+
+Prerequisites
+✅ Azure Databricks workspaces for DEV/TEST/PROD
+✅ Azure AD Service Principal with workspace access
+✅ Azure DevOps Project + Variable Groups per env:
+Dab_DEV_Dbw_Variables, Dab_Test_Dbw_Variables, …
+✅ Variables defined (per env):
+workspaceUrl, deployEnv, prefixNotebookPath, storageAccount, container, folderPath, existingClusterId, DLTClusterNodeType, DLTMinWorkers, DLTMaxWorkers, DLTSchema, catalog, successEmailDL, failureEmailDL, clientid, clientsecret, tenantid
