@@ -1,10 +1,35 @@
-![IaC](https://img.shields.io/badge/IaC-Databricks%20Asset%20Bundles-8B5CF6?style=flat-square&logo=terraform&logoColor=white)
-![Azure DevOps](https://img.shields.io/badge/CI%2FCD-Azure%20DevOps-2563eb?style=flat-square&logo=azuredevops&logoColor=white)
-![DLT](https://img.shields.io/badge/Delta%20Live%20Tables-DLT-059669?style=flat-square)
-![Unity Catalog](https://img.shields.io/badge/Unity%20Catalog-Ready-6b7280?style=flat-square)
-![Security](https://img.shields.io/badge/Security-Service%20Principal-DC2626?style=flat-square)
-![License](https://img.shields.io/badge/License-MIT-111827?style=flat-square&logo=open-source-initiative&logoColor=white)
-![Author](https://img.shields.io/badge/Kishore%20Kumar%20Nagisetty-Maintainer-ec4899?style=flat-square&logo=github&logoColor=white)
+<!-- 👑 AUTHOR & TITLE -->
+<p align="center">
+  <img src="https://img.shields.io/badge/Made%20by-Kishore%20Kumar%20Nagisetty-ff4b8b?style=for-the-badge&logo=github&logoColor=white" alt="author"/>
+</p>
+
+<h1 align="center">🚀 Databricks CI/CD — Jobs & DLT with Azure DevOps (Asset Bundles)</h1>
+
+<p align="center"><strong>Automated Promotion: DEV → TEST → PROD using Azure DevOps, Databricks Asset Bundles, Unity Catalog & Service Principals</strong></p>
+
+---
+
+<!-- 🔗 SOCIAL LINKS -->
+<p align="center">
+  <a href="https://www.linkedin.com/in/kishorekumarnagisetty/">
+    <img src="https://img.shields.io/badge/LinkedIn-Kishore%20Nagisetty-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white"/>
+  </a>
+  <a href="https://github.com/kishorenagisetty">
+    <img src="https://img.shields.io/badge/GitHub-kishorenagisetty-181717?style=for-the-badge&logo=github"/>
+  </a>
+</p>
+
+---
+
+<!-- 🏷️ STACK BADGES -->
+<p align="center">
+  <img src="https://img.shields.io/badge/IaC-Databricks%20Asset%20Bundles-9333EA?style=for-the-badge&logo=terraform&logoColor=white"/>
+  <img src="https://img.shields.io/badge/CI%2FCD-Azure%20DevOps-0078D7?style=for-the-badge&logo=azuredevops&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Delta%20Live%20Tables-DLT-10B981?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/Unity%20Catalog-Ready-6B7280?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/Security-Service%20Principal-DC2626?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/License-MIT-111827?style=for-the-badge&logo=open-source-initiative&logoColor=white"/>
+</p>
 
 
 
