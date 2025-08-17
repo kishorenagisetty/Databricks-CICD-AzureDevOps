@@ -14,7 +14,7 @@
   <a href="https://www.linkedin.com/in/kishorekumarnagisetty/">
     <img src="https://img.shields.io/badge/LinkedIn-Kishore%20Nagisetty-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white"/>
   </a>
-  <a href="https://github.com/kishorenagisetty">
+  <a href="https://github.com/kishore nagisetty">
     <img src="https://img.shields.io/badge/GitHub-kishorenagisetty-181717?style=for-the-badge&logo=github"/>
   </a>
 </p>
